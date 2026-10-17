@@ -1,0 +1,8 @@
+{
+  "name": "新竹青年分團 2027 青年健走跑步健康打卡計畫",
+  "description": "國際佛光會新竹青年分團數位青年平台：包含分團簡介、2027 跨界青年健康計畫（步步有你，夜間相聚雙軌打卡）、專案活動成效與佐證資料彙整系統。",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

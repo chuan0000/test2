@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>綠色生活步步留 ｜ 日常低碳代步與碳足跡登記專區</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandBg: '#F8F9FA',
+            brandDark: '#2C3437',
+            sageGreen: '#70C1B3',
+            sageDark: '#569f93',
+            apricot: '#F4A261',
+            apricotDark: '#e08a44',
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #F8F9FA;
+      color: #2C3437;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .badge-glow {
+      box-shadow: 0 0 15px rgba(112, 193, 179, 0.35);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-[#70C1B3]/30">
+
+  <!-- Top Navigation & Brand Header -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-xs">
+    <!-- Sub-bar -->
+    <div class="bg-[#2C3437] text-stone-200 px-4 py-1.5 text-xs">
+      <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-[#70C1B3] animate-pulse"></span>
+          <span class="font-medium text-stone-300">
+            國際佛光會新竹青年分團 ｜ 2027 青年健走跑步健康打卡計畫 • 綠色生活專案
+          </span>
+        </div>
+        <div class="flex items-center gap-3 text-stone-300 text-[11px]">
+          <a href="/" class="text-[#70C1B3] hover:text-[#8ee4d5] underline flex items-center gap-1 transition-colors">
+            ← 返回 2027 主打卡系統
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Header -->
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#70C1B3] to-[#52998e] flex items-center justify-center text-white shadow-xs shrink-0">
+          <!-- Leaf / Walk Icon -->
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl sm:text-2xl font-black text-[#2C3437] tracking-tight">
+              綠色生活步步留 ｜ 日常低碳代步登記
+            </h1>
+            <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full bg-[#70C1B3]/15 text-[#70C1B3] text-xs font-bold border border-[#70C1B3]/30">
+              碳足跡專區
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-stone-500 font-medium mt-0.5">
+            以雙腳或單車代替短程交通，把每一步化為地球的減碳足跡。
+          </p>
+        </div>
+      </div>
+
+      <!-- Admin Mode Switcher & Quick Actions -->
+      <div class="flex items-center gap-2 self-start md:self-auto">
+        <button id="adminToggleBtn" onclick="toggleAdminMode()" class="px-3 py-1.5 rounded-xl border border-stone-200 text-xs font-semibold text-stone-600 hover:bg-stone-100 flex items-center gap-1.5 transition-colors">
+          <svg class="w-3.5 h-3.5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span id="adminToggleText">管理員檢視模式</span>
+        </button>
+
+        <button onclick="exportCSV()" class="px-3.5 py-1.5 rounded-xl bg-[#2C3437] hover:bg-black text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs">
+          <svg class="w-3.5 h-3.5 text-[#70C1B3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          匯出 CSV
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-1 space-y-6">
+
+    <!-- 1. Real-time Carbon Stats Dashboard (3 Minimal Metric Cards) -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+      <!-- Card 1: Total Green Distance -->
+      <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-[#70C1B3]/50 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-stone-500">全團累計綠色代步里程</span>
+          <div class="w-8 h-8 rounded-xl bg-[#70C1B3]/15 text-[#70C1B3] flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+        </div>
+        <div class="mt-3">
+          <div class="text-3xl font-black text-[#2C3437] tracking-tight">
+            <span id="statTotalKm">0.0</span> <span class="text-sm font-bold text-stone-400">km</span>
+          </div>
+          <p class="text-[11px] text-stone-400 mt-1 flex items-center gap-1">
+            <span class="text-[#70C1B3] font-semibold">雙腳與單車</span> 共同累積之日常通勤
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2: Total Reduced CO2e -->
+      <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-[#70C1B3]/50 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-stone-500">全團累計減少碳排放量</span>
+          <div class="w-8 h-8 rounded-xl bg-[#70C1B3]/15 text-[#70C1B3] flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
+            </svg>
+          </div>
+        </div>
+        <div class="mt-3">
+          <div class="text-3xl font-black text-[#70C1B3] tracking-tight">
+            <span id="statTotalCo2">0.000</span> <span class="text-sm font-bold text-stone-400">kg CO₂e</span>
+          </div>
+          <p class="text-[11px] text-stone-400 mt-1">
+            以每公里減少 55g (0.055 kg) 機車碳排計算
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3: Tree Equivalent Offset -->
+      <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-[#F4A261]/50 transition-all">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-stone-500">相當於為地球種植成樹</span>
+          <div class="w-8 h-8 rounded-xl bg-[#F4A261]/20 text-[#F4A261] flex items-center justify-center">
+            <span class="text-base">🌳</span>
+          </div>
+        </div>
+        <div class="mt-3">
+          <div class="text-3xl font-black text-[#F4A261] tracking-tight flex items-baseline gap-1.5">
+            <span id="statTrees">0.0</span> <span class="text-sm font-bold text-stone-400">棵成樹</span>
+          </div>
+          <p class="text-[11px] text-stone-400 mt-1 flex items-center justify-between">
+            <span>成樹年吸碳標準：12 kg/棵</span>
+            <span id="statTreeProgress" class="font-bold text-[#F4A261]">0%</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Concept Explanation Banner -->
+    <div class="bg-gradient-to-r from-[#70C1B3]/10 via-[#F4A261]/10 to-transparent p-4 rounded-2xl border border-[#70C1B3]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-[#2C3437]">
+      <div class="flex items-center gap-2.5">
+        <span class="text-lg">🌱</span>
+        <div>
+          <span class="font-bold text-[#2C3437]">低碳生活換算原則：</span>
+          <span class="text-stone-600">以取代短程燃油機車為基準，每走或騎 1 km ＝ 減碳 0.055 kg (55g CO₂e)；每累積 12 kg ＝ 種植 1 棵成樹一年吸碳量。</span>
+        </div>
+      </div>
+      <div class="text-[11px] font-semibold text-[#70C1B3] bg-white px-2.5 py-1 rounded-lg border border-[#70C1B3]/30 shrink-0">
+        青年健康 ✕ 地球永續
+      </div>
+    </div>
+
+    <!-- 2. Submission Form + Dynamic Live Feed Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: Registration Form (5 cols) -->
+      <section class="lg:col-span-5 bg-white p-6 rounded-2xl border border-stone-200 shadow-xs space-y-5">
+        <div class="border-b border-stone-100 pb-3">
+          <h2 class="text-base font-black text-[#2C3437] flex items-center gap-2">
+            <span class="w-2 h-4 rounded-full bg-[#70C1B3]"></span>
+            日常低碳代步登記表
+          </h2>
+          <p class="text-xs text-stone-500 mt-0.5">
+            隨時隨地記錄您的徒步或單車代步歷程，將減碳化為具體貢獻！
+          </p>
+        </div>
+
+        <form id="commuteForm" onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs">
+          
+          <!-- Member Name -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-bold text-[#2C3437]">
+                登記人姓名 / 暱稱 <span class="text-rose-500">*</span>
+              </label>
+              <button type="button" onclick="toggleCustomNameInput()" class="text-[11px] text-[#70C1B3] hover:underline font-semibold">
+                <span id="customNameToggleLabel">手動輸入姓名</span>
+              </button>
+            </div>
+
+            <!-- Predefined Select -->
+            <div id="nameSelectContainer">
+              <select id="memberNameSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 bg-stone-50/50 text-xs text-[#2C3437] font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#70C1B3] focus:bg-white transition-all">
+                <option value="徐信銓">徐信銓</option>
+                <option value="周汶蔚">周汶蔚</option>
+                <option value="Dicky">Dicky</option>
+                <option value="李晨安">李晨安</option>
+                <option value="林子涵">林子涵</option>
+                <option value="陳冠宇">陳冠宇</option>
+                <option value="張庭瑋">張庭瑋</option>
+              </select>
+            </div>
+
+            <!-- Custom Input (hidden by default) -->
+            <div id="nameInputContainer" class="hidden mt-1">
+              <input type="text" id="memberNameInput" placeholder="請輸入姓名或法名暱稱" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 bg-stone-50/50 text-xs text-[#2C3437] focus:outline-hidden focus:ring-2 focus:ring-[#70C1B3] focus:bg-white transition-all" />
+            </div>
+          </div>
+
+          <!-- Date & Time -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-bold text-[#2C3437] mb-1">
+                代步日期 <span class="text-rose-500">*</span>
+              </label>
+              <input type="date" id="commuteDate" required class="w-full px-3 py-2 rounded-xl border border-stone-200 bg-stone-50/50 text-xs text-[#2C3437] focus:outline-hidden focus:ring-2 focus:ring-[#70C1B3] focus:bg-white" />
+            </div>
+            <div>
+              <label class="block font-bold text-[#2C3437] mb-1">
+                代步時間 <span class="text-rose-500">*</span>
+              </label>
+              <input type="time" id="commuteTime" required class="w-full px-3 py-2 rounded-xl border border-stone-200 bg-stone-50/50 text-xs text-[#2C3437] focus:outline-hidden focus:ring-2 focus:ring-[#70C1B3] focus:bg-white" />
+            </div>
+          </div>
+
+          <!-- Route: Origin & Destination -->
+          <div class="space-y-2.5">
+            <label class="block font-bold text-[#2C3437]">
+              起訖路線地點 <span class="text-rose-500">*</span>
+            </label>
+
+            <!-- Origin -->
+            <div>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 font-bold text-[11px]">起點</span>
+                <input type="text" id="originPlace" required placeholder="例：新竹火車站、學校宿舍、公司" class="w-full pl-11 pr-3 py-2 rounded-xl border border-stone-200 bg-stone-50/50 text-xs text-[#2C3437] focus:outline-hidden focus:ring-2 focus:ring-[#70C1B3] focus:bg-white" />
+              </div>
+              <!-- Quick pills for origin -->
+              <div class="flex flex-wrap gap-1 mt-1 text-[10px]">
+                <button type="button" onclick="setOrigin('新竹火車站')" class="px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 hover:bg-[#70C1B3]/15 hover:text-[#70C1B3] transition-colors">+ 新竹火車站</button>
+                <button type="button" onclick="setOrigin('學校宿舍')" class="px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 hover:bg-[#70C1B3]/15 hover:text-[#70C1B3] transition-colors">+ 學校宿舍</button>
+                <button type="button" onclick="setOrigin('清華大學')" class="px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 hover:bg-[#70C1B3]/15 hover:text-[#70C1B3] transition-colors">+ 清華大學</button>
+              </div>
+            </div>
+
+            <!-- Destination -->
+            <div>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 font-bold text-[11px]">訖點</span>
+                <input type="text" id="destPlace" required placeholder="例：法寶寺、教室、新竹巨城、公司" class="w-full pl-11 pr-3 py-2 rounded-xl border border-stone-200 bg-stone-50/50 text-xs text-[#2C3437] focus:outline-hidden focus:ring-2 focus:ring-[#70C1B3] focus:bg-white" />
+              </div>
+              <!-- Quick pills for destination -->
+              <div class="flex flex-wrap gap-1 mt-1 text-[10px]">
+                <button type="button" onclick="setDest('法寶寺')" class="px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 hover:bg-[#70C1B3]/15 hover:text-[#70C1B3] transition-colors font-semibold text-[#70C1B3]">+ 法寶寺</button>
+                <button type="button" onclick="setDest('新竹巨城')" class="px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 hover:bg-[#70C1B3]/15 hover:text-[#70C1B3] transition-colors">+ 新竹巨城</button>
+                <button type="button" onclick="setDest('護城河公園')" class="px-2 py-0.5 rounded-md bg-stone-100 text-stone-600 hover:bg-[#70C1B3]/15 hover:text-[#70C1B3] transition-colors">+ 護城河公園</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transport Mode Radio/Buttons -->
+          <div>
+            <label class="block font-bold text-[#2C3437] mb-1.5">
+              綠色代步方式 <span class="text-rose-500">*</span>
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="btnModeWalk" onclick="selectMode('徒步健走')" class="py-2.5 px-3 rounded-xl border-2 border-[#70C1B3] bg-[#70C1B3]/10 text-[#70C1B3] font-bold flex items-center justify-center gap-2 transition-all">
+                <span class="text-base">🚶</span> 徒步健走
+              </button>
+              <button type="button" id="btnModeBike" onclick="selectMode('自行車 / YouBike')" class="py-2.5 px-3 rounded-xl border-2 border-stone-200 bg-white text-stone-600 font-bold flex items-center justify-center gap-2 hover:bg-stone-50 transition-all">
+                <span class="text-base">🚲</span> 自行車 / YouBike
+              </button>
+            </div>
+            <input type="hidden" id="commuteMode" value="徒步健走" />
+          </div>
+
+          <!-- Distance Input & Realtime CO2 Live Calculation -->
+          <div>
+            <label class="block font-bold text-[#2C3437] mb-1">
+              移動里程（公里數 km） <span class="text-rose-500">*</span>
+            </label>
+            <div class="relative">
+              <input type="number" id="commuteDistance" step="0.1" min="0.1" max="100" required placeholder="例：1.8" oninput="calculateLiveCo2()" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 bg-stone-50/50 text-sm font-bold text-[#2C3437] focus:outline-hidden focus:ring-2 focus:ring-[#70C1B3] focus:bg-white transition-all" />
+              <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-stone-400">km</span>
+            </div>
+
+            <!-- Dynamic CO2 feedback box -->
+            <div class="mt-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200/60 text-emerald-800 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm">🍃</span>
+                <span class="text-[11px] font-medium">本次行動預計減少約</span>
+              </div>
+              <div class="text-right">
+                <span id="liveCo2Val" class="text-sm font-black text-emerald-700">0.000</span>
+                <span class="text-[10px] font-bold text-emerald-600">kg CO₂e</span>
+                <span class="text-[10px] text-emerald-500 font-normal">（<span id="liveCo2Grams">0</span>g）</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Photo Proof Upload (Optional) -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-bold text-[#2C3437]">
+                代步佐證照片 <span class="text-stone-400 font-normal">（選填，Google Maps / YouBike / 街景實拍）</span>
+              </label>
+            </div>
+
+            <!-- Upload Area -->
+            <div id="uploadContainer" class="border border-dashed border-stone-300 rounded-xl p-3 text-center bg-stone-50/60 hover:bg-stone-50 transition-colors relative cursor-pointer" onclick="triggerFileInput()">
+              <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)" />
+              
+              <div id="uploadPrompt" class="space-y-1">
+                <svg class="w-6 h-6 mx-auto text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <div class="text-[11px] text-stone-600 font-medium">點擊或拖曳上傳截圖 / 照片</div>
+                <div class="text-[10px] text-stone-400">支援 JPG, PNG, WEBP (自動本地壓縮)</div>
+              </div>
+
+              <!-- Preview Image Container (hidden initially) -->
+              <div id="previewContainer" class="hidden relative">
+                <img id="previewImg" src="" alt="佐證預覽" class="h-28 mx-auto rounded-lg object-contain border border-stone-200" />
+                <button type="button" onclick="removePhoto(event)" class="absolute top-1 right-1 p-1 rounded-full bg-black/60 hover:bg-black text-white text-xs transition-colors" title="移除圖片">
+                  ✕
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Note / Mood reflection -->
+          <div>
+            <label class="block font-bold text-[#2C3437] mb-1">
+              一句話心情隨筆 <span class="text-stone-400 font-normal">（選填）</span>
+            </label>
+            <input type="text" id="commuteNote" placeholder="例：今天走去法寶寺吹風很舒服，精神飽滿！" class="w-full px-3 py-2 rounded-xl border border-stone-200 bg-stone-50/50 text-xs text-[#2C3437] focus:outline-hidden focus:ring-2 focus:ring-[#70C1B3] focus:bg-white" />
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button type="submit" id="submitBtn" class="w-full py-3 rounded-xl bg-[#70C1B3] hover:bg-[#5db2a3] text-white font-bold text-xs transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              確認送出代步登記
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Right Column: Dual View Tabs (Feed & Leaderboard) (7 cols) -->
+      <section class="lg:col-span-7 space-y-4">
+        
+        <!-- View Switcher Tabs -->
+        <div class="bg-white p-1.5 rounded-2xl border border-stone-200 shadow-2xs flex items-center justify-between">
+          <div class="flex items-center gap-1">
+            <button id="tabFeedBtn" onclick="switchView('feed')" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#70C1B3] text-white transition-all shadow-2xs flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              最新足跡動態牆
+              <span id="feedCountBadge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-white text-[#70C1B3]">0</span>
+            </button>
+
+            <button id="tabLeaderboardBtn" onclick="switchView('leaderboard')" class="px-4 py-2 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100 transition-all flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-[#F4A261]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              年度減碳先鋒榜
+            </button>
+          </div>
+
+          <!-- Quick Filter / Search inside feed -->
+          <div id="feedFilterControls" class="flex items-center gap-2 pr-2">
+            <input type="text" id="feedSearch" placeholder="搜尋團員 / 地點..." oninput="renderFeed()" class="px-2.5 py-1 rounded-lg border border-stone-200 bg-stone-50 text-[11px] focus:outline-hidden focus:ring-1 focus:ring-[#70C1B3] w-32 sm:w-40" />
+          </div>
+        </div>
+
+        <!-- 2.1 View: Feed Wall Container -->
+        <div id="feedViewContainer" class="space-y-3">
+          <div id="feedList" class="space-y-3">
+            <!-- Feed items injected via JS -->
+          </div>
+        </div>
+
+        <!-- 2.2 View: Leaderboard Container (hidden by default) -->
+        <div id="leaderboardViewContainer" class="hidden bg-white rounded-2xl border border-stone-200 shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-stone-100 flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-[#2C3437] flex items-center gap-2">
+                <span class="text-base">🏆</span> 青年年度減碳先鋒榮譽榜
+              </h3>
+              <p class="text-[11px] text-stone-400 mt-0.5">
+                依全體團員累積代步減碳總量即時排定，前三名頒予「綠色先鋒」榮譽標記。
+              </p>
+            </div>
+            <span class="text-[11px] font-semibold text-[#70C1B3] bg-[#70C1B3]/10 px-2.5 py-1 rounded-lg border border-[#70C1B3]/20">
+              淨零同行
+            </span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="bg-stone-50 text-stone-400 font-bold border-b border-stone-200 text-[11px]">
+                  <th class="py-3 px-4">名次 / 團員</th>
+                  <th class="py-3 px-3">代步次數</th>
+                  <th class="py-3 px-3">累計里程 (km)</th>
+                  <th class="py-3 px-3">累計減碳 (kg CO₂e)</th>
+                  <th class="py-3 px-4 text-right">折合植樹貢獻</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardTableBody" class="divide-y divide-stone-100">
+                <!-- Leaderboard rows injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin Control Footer Box (Only shows when admin mode is ON) -->
+        <div id="adminPanelBox" class="hidden bg-stone-50 border border-stone-200 rounded-2xl p-4 text-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-[#2C3437] font-bold">
+              <svg class="w-4 h-4 text-[#70C1B3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              管理員維護中心
+            </div>
+            <span class="text-[11px] text-stone-500 font-medium">已開啟各筆紀錄管理功能</span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-stone-200">
+            <button onclick="resetToMockData()" class="px-3 py-1.5 rounded-xl bg-white border border-stone-300 text-stone-700 font-semibold text-xs hover:bg-stone-100 transition-colors">
+              重置系統資料
+            </button>
+            <button onclick="clearAllData()" class="px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 font-semibold text-xs hover:bg-rose-100 transition-colors">
+              清空所有紀錄
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Photo Lightbox Modal -->
+  <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeImageModal()">
+    <div class="relative max-w-2xl w-full bg-white rounded-2xl overflow-hidden p-2" onclick="event.stopPropagation()">
+      <button onclick="closeImageModal()" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center font-bold hover:bg-black transition-colors">
+        ✕
+      </button>
+      <img id="modalImg" src="" alt="放大佐證照" class="w-full max-h-[75vh] object-contain rounded-xl" />
+      <div id="modalCaption" class="p-3 text-xs text-stone-600 font-medium text-center"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-[#2C3437] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-stone-700 text-xs animate-bounce">
+    <div class="w-6 h-6 rounded-full bg-[#70C1B3] flex items-center justify-center text-white font-bold text-xs">
+      ✓
+    </div>
+    <div id="toastMessage" class="font-bold">登記成功！感謝您為地球減碳！</div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-stone-200 py-6 px-4 text-xs text-stone-500 mt-auto">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+      <div>
+        <p class="font-bold text-[#2C3437]">國際佛光會新竹青年分團 • 綠色生活步步留計畫</p>
+        <p class="text-[11px] text-stone-400">日常低碳代步 ✕ 碳足跡登記 ✕ 步步有你，夜間相聚</p>
+      </div>
+      <div class="text-[11px] text-stone-400">
+        碳排係數：0.055 kg CO₂e / km • 成樹換算：12 kg CO₂e / 棵
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vanilla JavaScript Application Logic -->
+  <script>
+    // Storage Keys & Constants
+    const STORAGE_KEY = 'hsinchu_youth_green_commute_v1';
+    const CO2_FACTOR = 0.055; // 0.055 kg CO2e per km (55g)
+    const TREE_FACTOR = 12.0; // 12 kg CO2e per tree per year
+
+    // State
+    let currentPhotoBase64 = null;
+    let isAdminMode = false;
+    let currentView = 'feed'; // 'feed' | 'leaderboard'
+    let isCustomName = false;
+
+    // Realistic Mock Data
+    const INITIAL_MOCK_DATA = [
+      {
+        id: 'gc-101',
+        memberName: '徐信銓',
+        date: '2027-04-10',
+        time: '08:30',
+        mode: '徒步健走',
+        origin: '新竹火車站',
+        destination: '法寶寺',
+        distance: 1.8,
+        co2Saved: Number((1.8 * CO2_FACTOR).toFixed(4)),
+        photoUrl: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80',
+        note: '提早一站下車，散步去法寶寺吹風超舒服！',
+        createdAt: '2027-04-10T08:45:00.000Z'
+      },
+      {
+        id: 'gc-102',
+        memberName: '周汶蔚',
+        date: '2027-04-09',
+        time: '12:15',
+        mode: '自行車 / YouBike',
+        origin: '學校宿舍',
+        destination: '教室',
+        distance: 2.5,
+        co2Saved: Number((2.5 * CO2_FACTOR).toFixed(4)),
+        photoUrl: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=600&q=80',
+        note: '騎 YouBike 沿途經過護城河，綠意盎然很愜意。',
+        createdAt: '2027-04-09T12:30:00.000Z'
+      },
+      {
+        id: 'gc-103',
+        memberName: 'Dicky',
+        date: '2027-04-08',
+        time: '12:00',
+        mode: '徒步健走',
+        origin: '公司辦公室',
+        destination: '演藝廳午餐',
+        distance: 1.2,
+        co2Saved: Number((1.2 * CO2_FACTOR).toFixed(4)),
+        photoUrl: null,
+        note: '午休散步兼低碳代步，精神好很多！',
+        createdAt: '2027-04-08T12:20:00.000Z'
+      },
+      {
+        id: 'gc-104',
+        memberName: '李晨安',
+        date: '2027-04-08',
+        time: '17:40',
+        mode: '徒步健走',
+        origin: '新竹轉運站',
+        destination: '新竹巨城',
+        distance: 1.5,
+        co2Saved: Number((1.5 * CO2_FACTOR).toFixed(4)),
+        photoUrl: null,
+        note: '用雙腳代替搭短程公車或叫車，減碳小確幸。',
+        createdAt: '2027-04-08T18:00:00.000Z'
+      },
+      {
+        id: 'gc-105',
+        memberName: '林子涵',
+        date: '2027-04-07',
+        time: '19:10',
+        mode: '自行車 / YouBike',
+        origin: '清華大學南門',
+        destination: '法寶寺',
+        distance: 3.2,
+        co2Saved: Number((3.2 * CO2_FACTOR).toFixed(4)),
+        photoUrl: 'https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?auto=format&fit=crop&w=600&q=80',
+        note: '每週固定的低碳自行車日，身體輕盈！',
+        createdAt: '2027-04-07T19:30:00.000Z'
+      }
+    ];
+
+    // Data Load & Save
+    function getStoredRecords() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {
+        console.error('LocalStorage load failed', e);
+      }
+      // Save initial mock
+      saveRecords(INITIAL_MOCK_DATA);
+      return INITIAL_MOCK_DATA;
+    }
+
+    function saveRecords(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    // Initialize Page
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set default date & time
+      const today = new Date();
+      const dateStr = today.toISOString().split('T')[0];
+      const hours = String(today.getHours()).padStart(2, '0');
+      const mins = String(today.getMinutes()).padStart(2, '0');
+      
+      document.getElementById('commuteDate').value = dateStr;
+      document.getElementById('commuteTime').value = `${hours}:${mins}`;
+
+      // Render Dashboard & Views
+      refreshAll();
+    });
+
+    // Refresh everything
+    function refreshAll() {
+      const records = getStoredRecords();
+      updateDashboardStats(records);
+      renderFeed();
+      renderLeaderboard(records);
+    }
+
+    // 1. Dashboard Stats calculation
+    function updateDashboardStats(records) {
+      const totalKm = records.reduce((sum, r) => sum + (Number(r.distance) || 0), 0);
+      const totalCo2 = records.reduce((sum, r) => sum + (Number(r.co2Saved) || 0), 0);
+      const trees = totalCo2 / TREE_FACTOR;
+      const treeProgress = Math.min(100, Math.round((totalCo2 % TREE_FACTOR / TREE_FACTOR) * 100));
+
+      document.getElementById('statTotalKm').innerText = totalKm.toFixed(1);
+      document.getElementById('statTotalCo2').innerText = totalCo2.toFixed(3);
+      document.getElementById('statTrees').innerText = trees.toFixed(1);
+      document.getElementById('statTreeProgress').innerText = `下一棵成樹進度 ${treeProgress}%`;
+      document.getElementById('feedCountBadge').innerText = records.length;
+    }
+
+    // 2. Transport Mode Selector
+    function selectMode(mode) {
+      document.getElementById('commuteMode').value = mode;
+      const btnWalk = document.getElementById('btnModeWalk');
+      const btnBike = document.getElementById('btnModeBike');
+
+      if (mode === '徒步健走') {
+        btnWalk.className = 'py-2.5 px-3 rounded-xl border-2 border-[#70C1B3] bg-[#70C1B3]/10 text-[#70C1B3] font-bold flex items-center justify-center gap-2 transition-all';
+        btnBike.className = 'py-2.5 px-3 rounded-xl border-2 border-stone-200 bg-white text-stone-600 font-bold flex items-center justify-center gap-2 hover:bg-stone-50 transition-all';
+      } else {
+        btnBike.className = 'py-2.5 px-3 rounded-xl border-2 border-[#70C1B3] bg-[#70C1B3]/10 text-[#70C1B3] font-bold flex items-center justify-center gap-2 transition-all';
+        btnWalk.className = 'py-2.5 px-3 rounded-xl border-2 border-stone-200 bg-white text-stone-600 font-bold flex items-center justify-center gap-2 hover:bg-stone-50 transition-all';
+      }
+    }
+
+    // Quick fill origin/dest
+    function setOrigin(val) {
+      document.getElementById('originPlace').value = val;
+    }
+    function setDest(val) {
+      document.getElementById('destPlace').value = val;
+    }
+
+    // Live CO2 calculation
+    function calculateLiveCo2() {
+      const dist = parseFloat(document.getElementById('commuteDistance').value) || 0;
+      const co2 = (dist * CO2_FACTOR).toFixed(3);
+      const grams = Math.round(dist * CO2_FACTOR * 1000);
+      document.getElementById('liveCo2Val').innerText = co2;
+      document.getElementById('liveCo2Grams').innerText = grams;
+    }
+
+    // Toggle Custom Name Input
+    function toggleCustomNameInput() {
+      isCustomName = !isCustomName;
+      const selectBox = document.getElementById('nameSelectContainer');
+      const inputBox = document.getElementById('nameInputContainer');
+      const label = document.getElementById('customNameToggleLabel');
+
+      if (isCustomName) {
+        selectBox.classList.add('hidden');
+        inputBox.classList.remove('hidden');
+        label.innerText = '切換回常用清單';
+        document.getElementById('memberNameInput').focus();
+      } else {
+        selectBox.classList.remove('hidden');
+        inputBox.classList.add('hidden');
+        label.innerText = '手動輸入姓名';
+      }
+    }
+
+    // Photo Upload & Preview
+    function triggerFileInput() {
+      document.getElementById('photoInput').click();
+    }
+
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        currentPhotoBase64 = evt.target.result;
+        document.getElementById('previewImg').src = currentPhotoBase64;
+        document.getElementById('uploadPrompt').classList.add('hidden');
+        document.getElementById('previewContainer').classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removePhoto(e) {
+      e.stopPropagation();
+      currentPhotoBase64 = null;
+      document.getElementById('photoInput').value = '';
+      document.getElementById('previewImg').src = '';
+      document.getElementById('previewContainer').classList.add('hidden');
+      document.getElementById('uploadPrompt').classList.remove('hidden');
+    }
+
+    // Form Submission
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      let name = '';
+      if (isCustomName) {
+        name = document.getElementById('memberNameInput').value.trim();
+        if (!name) {
+          alert('請輸入登記人姓名');
+          return;
+        }
+      } else {
+        name = document.getElementById('memberNameSelect').value;
+      }
+
+      const date = document.getElementById('commuteDate').value;
+      const time = document.getElementById('commuteTime').value;
+      const origin = document.getElementById('originPlace').value.trim();
+      const destination = document.getElementById('destPlace').value.trim();
+      const mode = document.getElementById('commuteMode').value;
+      const distance = parseFloat(document.getElementById('commuteDistance').value);
+      const note = document.getElementById('commuteNote').value.trim();
+
+      if (!distance || distance <= 0) {
+        alert('請輸入有效的移動里程數');
+        return;
+      }
+
+      const co2Saved = Number((distance * CO2_FACTOR).toFixed(4));
+
+      const newRecord = {
+        id: 'gc-' + Date.now(),
+        memberName: name,
+        date: date,
+        time: time,
+        mode: mode,
+        origin: origin,
+        destination: destination,
+        distance: distance,
+        co2Saved: co2Saved,
+        photoUrl: currentPhotoBase64,
+        note: note,
+        createdAt: new Date().toISOString()
+      };
+
+      // Save to local storage
+      const records = getStoredRecords();
+      records.unshift(newRecord);
+      saveRecords(records);
+
+      // Trigger Confetti
+      try {
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.8 },
+          colors: ['#70C1B3', '#F4A261', '#569f93']
+        });
+      } catch (err) {}
+
+      // Show Toast
+      showToast(`🎉 登記成功！本次代步已為地球減少 ${co2Saved.toFixed(3)} kg 碳排！`);
+
+      // Reset form fields
+      document.getElementById('commuteDistance').value = '';
+      document.getElementById('commuteNote').value = '';
+      document.getElementById('originPlace').value = '';
+      document.getElementById('destPlace').value = '';
+      removePhoto(new Event('dummy'));
+      calculateLiveCo2();
+
+      // Refresh Dashboard & Feed
+      refreshAll();
+    }
+
+    // View Switching
+    function switchView(view) {
+      currentView = view;
+      const btnFeed = document.getElementById('tabFeedBtn');
+      const btnLeaderboard = document.getElementById('tabLeaderboardBtn');
+      const feedContainer = document.getElementById('feedViewContainer');
+      const leaderboardContainer = document.getElementById('leaderboardViewContainer');
+      const filterControls = document.getElementById('feedFilterControls');
+
+      if (view === 'feed') {
+        btnFeed.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-[#70C1B3] text-white transition-all shadow-2xs flex items-center gap-1.5';
+        btnLeaderboard.className = 'px-4 py-2 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100 transition-all flex items-center gap-1.5';
+        feedContainer.classList.remove('hidden');
+        leaderboardContainer.classList.add('hidden');
+        filterControls.classList.remove('hidden');
+      } else {
+        btnLeaderboard.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-[#70C1B3] text-white transition-all shadow-2xs flex items-center gap-1.5';
+        btnFeed.className = 'px-4 py-2 rounded-xl text-xs font-bold text-stone-600 hover:bg-stone-100 transition-all flex items-center gap-1.5';
+        leaderboardContainer.classList.remove('hidden');
+        feedContainer.classList.add('hidden');
+        filterControls.classList.add('hidden');
+      }
+    }
+
+    // Render Feed Wall
+    function renderFeed() {
+      const records = getStoredRecords();
+      const keyword = (document.getElementById('feedSearch')?.value || '').toLowerCase().trim();
+      const container = document.getElementById('feedList');
+
+      const filtered = records.filter(r => {
+        if (!keyword) return true;
+        return r.memberName.toLowerCase().includes(keyword) ||
+               r.origin.toLowerCase().includes(keyword) ||
+               r.destination.toLowerCase().includes(keyword) ||
+               r.mode.toLowerCase().includes(keyword) ||
+               (r.note && r.note.toLowerCase().includes(keyword));
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white p-8 rounded-2xl border border-stone-200 text-center text-stone-400 text-xs">
+            查無符合條件的低碳代步紀錄
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const modeIcon = item.mode.includes('自行車') ? '🚲' : '🚶';
+        const modeBg = item.mode.includes('自行車') ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        
+        return `
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-stone-200 shadow-2xs hover:border-[#70C1B3]/50 transition-all space-y-3">
+            <div class="flex items-start justify-between gap-3">
+              <!-- User Info & Date -->
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-[#70C1B3]/20 text-[#70C1B3] font-black text-sm flex items-center justify-center shrink-0">
+                  ${item.memberName.charAt(0)}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-sm text-[#2C3437]">${item.memberName}</span>
+                    <span class="px-2 py-0.5 rounded-md border text-[10px] font-bold ${modeBg}">
+                      ${modeIcon} ${item.mode}
+                    </span>
+                  </div>
+                  <div class="text-[11px] text-stone-400 font-medium mt-0.5">
+                    ${item.date} • ${item.time}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Carbon Reduction Badge & Delete -->
+              <div class="flex items-center gap-2">
+                <div class="text-right">
+                  <div class="text-xs font-black text-[#70C1B3]">-${Number(item.co2Saved).toFixed(3)} kg</div>
+                  <div class="text-[10px] text-stone-400 font-semibold">${Number(item.distance).toFixed(1)} km</div>
+                </div>
+
+                ${isAdminMode ? `
+                  <button onclick="deleteRecord('${item.id}')" class="p-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors" title="刪除此紀錄">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Route display -->
+            <div class="bg-stone-50 rounded-xl p-2.5 flex items-center justify-between text-xs text-[#2C3437]">
+              <div class="flex items-center gap-2 truncate">
+                <span class="text-stone-400 text-[11px]">路線：</span>
+                <span class="font-bold">${item.origin}</span>
+                <span class="text-stone-400">➔</span>
+                <span class="font-bold text-[#70C1B3]">${item.destination}</span>
+              </div>
+              <span class="text-[11px] font-semibold text-stone-500 shrink-0 ml-2">
+                ${item.distance} 公里
+              </span>
+            </div>
+
+            <!-- Note / Feeling -->
+            ${item.note ? `
+              <p class="text-xs text-stone-600 bg-[#F8F9FA] px-3 py-2 rounded-xl border border-stone-100 flex items-center gap-1.5">
+                <span class="text-stone-400">💬</span> "${item.note}"
+              </p>
+            ` : ''}
+
+            <!-- Photo thumbnail -->
+            ${item.photoUrl ? `
+              <div class="pt-1">
+                <button type="button" onclick="openImageModal('${encodeURIComponent(item.photoUrl)}', '${item.memberName} (${item.origin}➔${item.destination})')" class="group relative rounded-xl overflow-hidden border border-stone-200 block text-left">
+                  <img src="${item.photoUrl}" alt="佐證截圖" class="h-28 w-auto max-w-full rounded-lg object-cover group-hover:scale-105 transition-transform" />
+                  <span class="absolute bottom-1 right-1 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-md backdrop-blur-xs">
+                    點擊放大佐證
+                  </span>
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render Leaderboard
+    function renderLeaderboard(records) {
+      const userMap = {};
+
+      records.forEach(r => {
+        if (!userMap[r.memberName]) {
+          userMap[r.memberName] = {
+            name: r.memberName,
+            totalCount: 0,
+            totalDistance: 0,
+            totalCo2: 0,
+          };
+        }
+        userMap[r.memberName].totalCount += 1;
+        userMap[r.memberName].totalDistance += Number(r.distance) || 0;
+        userMap[r.memberName].totalCo2 += Number(r.co2Saved) || 0;
+      });
+
+      const list = Object.values(userMap).sort((a, b) => b.totalCo2 - a.totalCo2);
+      const tableBody = document.getElementById('leaderboardTableBody');
+
+      if (list.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-8 text-center text-stone-400">尚無排行數據</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tableBody.innerHTML = list.map((user, idx) => {
+        let rankBadge = `<span class="w-6 h-6 rounded-full bg-stone-100 text-stone-600 font-bold flex items-center justify-center text-xs">${idx + 1}</span>`;
+        if (idx === 0) rankBadge = `<span class="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-700 font-black border border-amber-400 text-xs">🥇 榜首</span>`;
+        if (idx === 1) rankBadge = `<span class="px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-black border border-stone-300 text-xs">🥈 亞軍</span>`;
+        if (idx === 2) rankBadge = `<span class="px-2 py-0.5 rounded-full bg-[#F4A261]/20 text-[#F4A261] font-black border border-[#F4A261] text-xs">🥉 季軍</span>`;
+
+        const treeContrib = (user.totalCo2 / TREE_FACTOR).toFixed(2);
+
+        return `
+          <tr class="hover:bg-stone-50 transition-colors">
+            <td class="py-3 px-4 font-bold text-[#2C3437]">
+              <div class="flex items-center gap-2.5">
+                ${rankBadge}
+                <span class="text-sm">${user.name}</span>
+                ${idx < 3 ? '<span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">綠色先鋒</span>' : ''}
+              </div>
+            </td>
+            <td class="py-3 px-3 text-stone-600 font-semibold">
+              ${user.totalCount} 次
+            </td>
+            <td class="py-3 px-3 font-bold text-[#F4A261]">
+              ${user.totalDistance.toFixed(1)} km
+            </td>
+            <td class="py-3 px-3 font-black text-[#70C1B3]">
+              ${user.totalCo2.toFixed(3)} kg
+            </td>
+            <td class="py-3 px-4 text-right font-medium text-stone-500">
+              🌳 約 ${treeContrib} 棵成樹
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Admin Mode Toggle
+    function toggleAdminMode() {
+      isAdminMode = !isAdminMode;
+      const text = document.getElementById('adminToggleText');
+      const box = document.getElementById('adminPanelBox');
+
+      if (isAdminMode) {
+        text.innerText = '退出管理員模式';
+        box.classList.remove('hidden');
+        showToast('已開啟管理員檢視模式，可刪除個別紀錄。');
+      } else {
+        text.innerText = '管理員檢視模式';
+        box.classList.add('hidden');
+      }
+      renderFeed();
+    }
+
+    // Delete Record
+    function deleteRecord(id) {
+      if (!confirm('確定要刪除這筆代步紀錄嗎？')) return;
+      let records = getStoredRecords();
+      records = records.filter(r => r.id !== id);
+      saveRecords(records);
+      showToast('紀錄已成功刪除');
+      refreshAll();
+    }
+
+    // Reset to Mock Data
+    function resetToMockData() {
+      if (!confirm('確定要重置回預設範例展示資料嗎？')) return;
+      saveRecords(INITIAL_MOCK_DATA);
+      showToast('已重置為預設展示資料！');
+      refreshAll();
+    }
+
+    // Clear All Data
+    function clearAllData() {
+      if (!confirm('確定要清空所有登記資料嗎？此操作不可還原。')) return;
+      saveRecords([]);
+      showToast('所有資料已清空');
+      refreshAll();
+    }
+
+    // Export CSV (with UTF-8 BOM for Excel)
+    function exportCSV() {
+      const records = getStoredRecords();
+      if (records.length === 0) {
+        alert('目前無可匯出的登記資料！');
+        return;
+      }
+
+      const headers = ['ID', '登記人姓名', '代步日期', '代步時間', '代步方式', '出發地點', '抵達地點', '里程(km)', '減少碳排(kg CO2e)', '佐證狀態', '心情隨筆'];
+      
+      const rows = records.map(r => [
+        `"${r.id}"`,
+        `"${r.memberName}"`,
+        `"${r.date}"`,
+        `"${r.time}"`,
+        `"${r.mode}"`,
+        `"${r.origin}"`,
+        `"${r.destination}"`,
+        r.distance,
+        r.co2Saved,
+        r.photoUrl ? '"有截圖"' : '"無截圖"',
+        `"${(r.note || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `新竹青年分團_低碳代步碳足跡報表_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('CSV 出席與碳足跡報表已成功下載！');
+    }
+
+    // Photo Lightbox
+    function openImageModal(url, caption) {
+      document.getElementById('modalImg').src = decodeURIComponent(url);
+      document.getElementById('modalCaption').innerText = caption || '';
+      document.getElementById('imageModal').classList.remove('hidden');
+    }
+
+    function closeImageModal() {
+      document.getElementById('imageModal').classList.add('hidden');
+    }
+
+    // Toast Utility
+    let toastTimeout = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toastMessage');
+      text.innerText = msg;
+      toast.classList.remove('hidden');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
